@@ -16,7 +16,7 @@ class Process:
 
         """
         by default, the process isn't allocated to any hole
-        #so instead of the hole ID, we assign it to "-1" to indicate it is free.
+        so instead of the hole ID, we assign it to "-1" to indicate it is free.
         """
         self.allocated_to = -1
 
