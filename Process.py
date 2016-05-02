@@ -1,24 +1,31 @@
 class Process:
 
-    def __init__(self, _pid, _size, _allocated=False):
+    def __init__(self, _pid, _size):
+        ####all asserts are to make sure that we pass "int" parameters to __init__
+        ####you are free to comment them out
         assert isinstance(_pid, int)
         self.pid = _pid
         assert isinstance(_size, int)
         self.size = _size
-        assert isinstance(_allocated, bool)
-        self.allocated = _allocated
+        ####by default, the process isn't allocated to any hole
+        ####so instead of the hole ID, we assign it to "-1" to indicate it is free.
+        self.allocated_to = -1
 
     def allocate(self, _hole):
-        if self.allocated is False:
+    ####allocate the process to a hole
+        ####make sure that the process isn't allocated to another hole
+        ####and that the hole isn't used by another process
+        if (self.allocated_to == -1 and _hole.allocated_to == -1):
             _hole.allocated_to = self
-            self.allocated = True
+            self.allocated_to = _hole
 
-    def deallocate(self, _hole):
-        if self.allocated is True:
-            _hole.allocated_to = -1
-            self.allocated = False
-
-    def swap(self, _hole,):
-        if (_hole.allocated_to != self) and (_hole.allocated_to != -1):
-            _hole.allocated_to.allocated = False
-            _hole.allocated_to = self
+    def deallocate(self):
+    ####deallocate the process
+        if self.allocated_to != -1:
+            ####this part is kinda twisted :D
+            ####(self.allocated_to) is hole x
+            ####so self.allocated_to.allocated_to is the process to which x is allocated
+            ####self.allocated_to.allocated_to means that the hole is free
+            self.allocated_to.allocated_to = -1
+            ####self.allocated_to = -1 means that the process isn't allocated to any hole.
+            self.allocated_to = -1
