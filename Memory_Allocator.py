@@ -2,6 +2,10 @@ import Hole
 import Process
 
 
+def deallocate(process):
+    process.deallocate()
+
+
 def allocator(holes, process, option):
     """
     :param holes:   List -> list of Hole Objects
@@ -16,6 +20,7 @@ def allocator(holes, process, option):
         # Sort in ascending order according to Holes size
         holes.sort(key=lambda tup: tup.size)
     elif option is 'w':
+        # Worst Fit
         # Sort in descending order according to Holes size
         holes.sort(key=lambda tup: tup.size)
         holes.reverse()
@@ -47,7 +52,20 @@ def allocator(holes, process, option):
     # Show Progress
 
 
+def best_fit(holes, process):
+    allocator(holes, process, 'b')
+
+
+def worst_fit(holes, process):
+    allocator(holes, process, 'w')
+
+
+def first_fit(holes, process):
+    allocator(holes, process, 'f')
+
+
 def show_progress(holes):
+    # Sort Memory by address
     holes.sort(key=lambda tup: tup.address)
     for hole in holes:
         if hole.allocated_to == -1:
@@ -76,7 +94,7 @@ if __name__ == '__main__':
         Processes_Objects.append(Process.Process(each[0], each[1]))
 
     for each in Processes_Objects:
-        allocator(Holes_Objects, each, 'w')
+        allocator(Holes_Objects, each, 'b')
 
     show_progress(Holes_Objects)
 
