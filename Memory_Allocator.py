@@ -1,6 +1,6 @@
 import Hole
 import Process
-
+import Draw
 
 def deallocate(process):
     process.deallocate()
@@ -85,6 +85,8 @@ if __name__ == '__main__':
 
     Holes_Objects = []
     Processes_Objects = []
+    Block_List = []
+    
     # Create Holes classes
     for each in holes_given:
         Holes_Objects.append(Hole.Hole(each[2], each[1]))
@@ -93,8 +95,12 @@ if __name__ == '__main__':
     for each in processes_given:
         Processes_Objects.append(Process.Process(each[0], each[1]))
 
+    # Show Initial Conditions
+    Draw.draw_graph(Holes_Objects,Processes_Objects, Block_List)
+    
     for each in Processes_Objects:
         allocator(Holes_Objects, each, 'b')
+    Draw.draw_graph(Holes_Objects,Processes_Objects, Block_List)
 
     show_progress(Holes_Objects)
 
