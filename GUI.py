@@ -136,6 +136,7 @@ class Mem(wx.Frame):
             backend.new_process(self.processes_id,int(self.Process_Size.GetValue()))
             Done_And_Return_To_Output_EVT(wx.EVT_BUTTON)
             self.processes_id += 1
+			"""BACKEND"""
             if (self.Management_Mode=='b'):
                 backend.best_fit()
             elif (self.Management_Mode=='w'):
