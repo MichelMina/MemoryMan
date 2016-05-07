@@ -1,6 +1,6 @@
 import Hole
 import Process
-# import Draw
+import Draw
 
 Holes_Objects = []
 Processes_Objects = []
@@ -76,10 +76,6 @@ def merge(in1, in2):
     """
     first = Holes_Objects[in1]
     second = Holes_Objects[in2]
-    print "First Hole: "
-    print "Address: " + str(first.address) + " Size: " + str(first.size)
-    print "Second Hole: "
-    print "Address: " + str(second.address) + " Size: " + str(second.size)
 
     if first.allocated_to == -1 and second.allocated_to == -1:
         # The hole will have the least starting address of the two
@@ -103,7 +99,7 @@ def apply_inputs(holes_given, processes_given):
     """
     # Create Holes classes
     for each in holes_given:
-        Holes_Objects.append(Hole.Hole(each[2], each[1]))
+        Holes_Objects.append(Hole.Hole(each[1], each[2]))
 
     # Create Processes classes
     for each in processes_given:
@@ -113,21 +109,21 @@ def apply_inputs(holes_given, processes_given):
 def best_fit():
     for each in Processes_Objects:
         allocator(Holes_Objects, each, 'b')
-    # Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
+    Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
     fix_holes()
 
 
 def worst_fit():
     for each in Processes_Objects:
         allocator(Holes_Objects, each, 'w')
-    # Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
+    Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
     fix_holes()
 
 
 def first_fit():
     for each in Processes_Objects:
         allocator(Holes_Objects, each, 'f')
-    # Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
+    Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
     fix_holes()
 
 
@@ -136,21 +132,25 @@ def deallocate(pid):
     :param pid:   Integer -> PID of process to be de-allocated
     """
     global Processes_Objects
+
+    to_be_deleted = None
     for each in Processes_Objects:
         # Found the process
         if pid is each.pid:
-            print "PID Found: " + str(pid)
-            print "Process Props: "
-            print "allocated to: " + str(each.allocated_to.pid)
-            print "Hole Address: " + str(each.allocated_to.address)
             # Get the hole the process is currently allocated to
-            hole_pid = each.allocated_to.pid + 1
+            hole_pid = each.allocated_to.pid
             # Deallocate the process
             each.deallocate()
+            to_be_deleted = each
             # Merge the hole
-            merge(hole_pid, hole_pid + 1)
-    # Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
+            if hole_pid + 1 <= Hole.Hole.count:
+                merge(hole_pid, hole_pid + 1)
+
+    if to_be_deleted is not None:
+        Processes_Objects.remove(to_be_deleted)
+
     fix_holes()
+    Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
 
 
 def new_process(pid, size):
@@ -175,24 +175,21 @@ def show_progress(holes):
 
 if __name__ == '__main__':
     holes_given = [
-        (0, 6, 0), (1, 14, 900), (2, 19, 2000), (3, 11, 2500), (4, 13, 2600)
+        (0, 0, 10), (1, 15, 5)
     ]
 
-    processes_given = [(0, 12)]
+    processes_given = [(0, 10), (1, 5)]
 
     apply_inputs(holes_given, processes_given)
 
     best_fit()
     print "\n\nInitial Run\n\n"
     show_progress(Holes_Objects)
-    new_process(1, 15)
-    print "\n\nAfter new process\n\n"
-    best_fit()
-    show_progress(Holes_Objects)
-    # Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
-
-    # show_progress(Holes_Objects)
     deallocate(0)
-    print "\n\nAfter Merge\n\n"
     show_progress(Holes_Objects)
+    deallocate(1)
+    print Processes_Objects
+    for each in Processes_Objects:
+        print each.allocated_to
 
+    show_progress(Holes_Objects)
