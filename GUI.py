@@ -1,6 +1,7 @@
 import wx
 import pygame
 import sys
+import Memory_Allocator as backend
 """
 Opening the WIKI Video
 """
@@ -36,13 +37,6 @@ class Mem(wx.Frame):
     processes_id=0
     def __init__(self, parent, id):
 
-        # Single Choice Dialogue (Choose Management mode)
-        select = wx.SingleChoiceDialog(None, 'Please choose the type of your desired scheduler', 'Scheduler Choice',['First fit', 'Best fit','Worst fit'])
-        if select.ShowModal() == wx.ID_CANCEL:
-            sys.exit()
-        # Store the choice and destroy it
-        self.Management_Mode = select.GetStringSelection()
-        select.Destroy()
 
         def Holes_Init(self):
             # BMP Buttons
@@ -107,6 +101,15 @@ class Mem(wx.Frame):
             self.Done.Hide()
             print self.processes
             Output(self)
+            """TODOOOO"""
+            backend.apply_inputs(self.holes,self.processes)
+            if (self.Management_Mode=='b'):
+                backend.best_fit()
+            elif (self.Management_Mode=='w'):
+                backend.worst_fit()
+            else:
+                backend.first_fit()
+
 
         def Deallocate_EVT(event):
             #asks user which process to deallocate and sends it to the backend
@@ -118,16 +121,33 @@ class Mem(wx.Frame):
                 return
             # Store the choice and destroy it
             self.to_be_deallocated = pop.GetStringSelection()
-            print self.to_be_deallocated[3]
-            """TODO Call Backend"""
+            """BACKEND"""
+            backend.deallocate(int(self.to_be_deallocated[3]))
+            if (self.Management_Mode=='b'):
+                backend.best_fit()
+            elif (self.Management_Mode=='w'):
+                backend.worst_fit()
+            else:
+                backend.first_fit()
             pop.Destroy()
 
         def Add_More_Process_EVT(event):
-            print 1
-            """TODO Call Backend"""
+            self.Process_Size.Value='0'
+            backend.new_process(self.processes_id,int(self.Process_Size.GetValue()))
+            Done_And_Return_To_Output_EVT(wx.EVT_BUTTON)
+            self.processes_id += 1
+            if (self.Management_Mode=='b'):
+                backend.best_fit()
+            elif (self.Management_Mode=='w'):
+                backend.worst_fit()
+            else:
+                backend.first_fit()
         def Done_And_Return_To_Output_EVT(event):
             self.Add.Destroy()
             self.Done.Destroy()
+            self.Process_Size_Static.Destroy()
+            self.Process_Size.Destroy()
+
             Output(self)
         def Add_More_EVT(event):
             self.Add_More.Destroy()
@@ -137,6 +157,17 @@ class Mem(wx.Frame):
                                       pos=(350, 175), style=wx.BORDER_NONE)
             self.Done = wx.BitmapButton(panel, -1, wx.Image("icons/Done.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap(),
                                       pos=(350, 230), style=wx.BORDER_NONE)
+            #Static Texts
+            self.Process_Size_Static= wx.StaticText(panel,-1,"Process Size",(10,170))
+            self.Process_Size_Static.SetBackgroundColour("white")
+            self.Process_Size_Static.SetFont(
+            wx.Font(20, wx.FONTFAMILY_SCRIPT, wx.FONTSTYLE_ITALIC, wx.BOLD, False, u'Tahoma'))
+
+            self.Process_Size = wx.TextCtrl(panel, pos=(200, 173), size=(100, 32), style=wx.BORDER_NONE)
+            self.Process_Size.SetFont(
+            wx.Font(20, wx.FONTFAMILY_SCRIPT, wx.FONTSTYLE_ITALIC, wx.BOLD, False, u'Viner Hand ITC'))
+            # Setting default Value
+            self.Process_Size.Value = '0'
 
             self.Bind(wx.EVT_BUTTON, Add_More_Process_EVT, self.Add)
             self.Bind(wx.EVT_BUTTON, Done_And_Return_To_Output_EVT, self.Done)
@@ -173,6 +204,15 @@ class Mem(wx.Frame):
         WikiQuestion_Answer = WikiQuestion.ShowModal()
         WikiQuestion.Destroy()
         Wiki_Question_Handler(WikiQuestion_Answer)
+
+        # Single Choice Dialogue (Choose Management mode)
+        select = wx.SingleChoiceDialog(None, 'Please choose the type of your desired scheduler', 'Scheduler Choice',['first fit', 'best fit','worst fit'])
+        if select.ShowModal() == wx.ID_CANCEL:
+            sys.exit()
+        # Store the choice and destroy it
+        self.Management_Mode = select.GetStringSelection()[0]
+        select.Destroy()
+
 
         # Main Frame
         image = 'icons/roses.png'
