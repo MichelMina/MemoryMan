@@ -90,6 +90,8 @@ class Mem(wx.Frame):
         def Done_Process_EVT(event):
             self.Process_Size.Destroy()
             self.Process_Size_Static.Destroy()
+            self.Add.Hide()
+            self.Done.Hide()
         def Processes_Init(self):
             #Change the  bind
             self.Bind(wx.EVT_BUTTON, Add_Process_EVT, self.Add)
@@ -131,10 +133,10 @@ class Mem(wx.Frame):
         # Making the Dinosaurs picture the main panel
         self.bitmap1 = wx.StaticBitmap(self, -1, self.bmp1, (0, 0))
         panel = self.bitmap1
-        '''# OS scheduler animated text
+        #OS scheduler animated text
         OS = 'icons/0.bmp'
         OS_im = wx.Image(OS, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-        wx.StaticBitmap(self, -1, OS_im, (0, 0))'''
+        wx.StaticBitmap(self, -1, OS_im, (0, 0))
 
 
 
