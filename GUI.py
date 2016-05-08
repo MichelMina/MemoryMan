@@ -2,6 +2,7 @@ import wx
 import pygame
 import sys
 import Memory_Allocator as backend
+import FileDialog
 """
 Opening the WIKI Video
 """
@@ -123,6 +124,7 @@ class Mem(wx.Frame):
             self.to_be_deallocated = pop.GetStringSelection()
             """BACKEND"""
             backend.deallocate(int(self.to_be_deallocated[3]))
+            dummy = self.to_be_deallocated.split()
             if (self.Management_Mode=='b'):
                 backend.best_fit()
             elif (self.Management_Mode=='w'):
@@ -132,11 +134,11 @@ class Mem(wx.Frame):
             pop.Destroy()
 
         def Add_More_Process_EVT(event):
-            self.Process_Size.Value='0'
             backend.new_process(self.processes_id,int(self.Process_Size.GetValue()))
+            self.processes.append([self.processes_id,int(self.Process_Size.GetValue())])
             Done_And_Return_To_Output_EVT(wx.EVT_BUTTON)
             self.processes_id += 1
-			"""BACKEND"""
+            """BACKEND"""
             if (self.Management_Mode=='b'):
                 backend.best_fit()
             elif (self.Management_Mode=='w'):
