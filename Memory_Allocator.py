@@ -109,22 +109,25 @@ def apply_inputs(holes_given, processes_given):
 def best_fit():
     for each in Processes_Objects:
         allocator(Holes_Objects, each, 'b')
-    Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
     fix_holes()
+    Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
+    show_progress(Holes_Objects)
 
 
 def worst_fit():
     for each in Processes_Objects:
         allocator(Holes_Objects, each, 'w')
-    Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
     fix_holes()
+    Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
+    show_progress(Holes_Objects)
 
 
 def first_fit():
     for each in Processes_Objects:
         allocator(Holes_Objects, each, 'f')
-    Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
     fix_holes()
+    Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
+    show_progress(Holes_Objects)
 
 
 def deallocate(pid):
@@ -151,6 +154,7 @@ def deallocate(pid):
 
     fix_holes()
     Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
+    show_progress(Holes_Objects)
 
 
 def new_process(pid, size):
@@ -172,24 +176,3 @@ def show_progress(holes):
             print "\tOccupied Process:\tP" + str(hole.allocated_to.pid)
         print "\tAddress:\t\t\t" + str(hole.address)
         print "\tSize:\t\t\t\t" + str(hole.size)
-
-if __name__ == '__main__':
-    holes_given = [
-        (0, 0, 10), (1, 15, 5)
-    ]
-
-    processes_given = [(0, 10), (1, 5)]
-
-    apply_inputs(holes_given, processes_given)
-
-    best_fit()
-    print "\n\nInitial Run\n\n"
-    show_progress(Holes_Objects)
-    deallocate(0)
-    show_progress(Holes_Objects)
-    deallocate(1)
-    print Processes_Objects
-    for each in Processes_Objects:
-        print each.allocated_to
-
-    show_progress(Holes_Objects)
