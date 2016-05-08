@@ -5,6 +5,7 @@ import Draw
 Holes_Objects = []
 Processes_Objects = []
 Block_List = []
+Graph = False
 
 
 def allocator(holes, process, option):
@@ -110,7 +111,8 @@ def best_fit():
     for each in Processes_Objects:
         allocator(Holes_Objects, each, 'b')
     fix_holes()
-    Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
+    if Graph:
+        Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
     show_progress(Holes_Objects)
 
 
@@ -118,7 +120,8 @@ def worst_fit():
     for each in Processes_Objects:
         allocator(Holes_Objects, each, 'w')
     fix_holes()
-    Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
+    if Graph:
+        Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
     show_progress(Holes_Objects)
 
 
@@ -126,7 +129,8 @@ def first_fit():
     for each in Processes_Objects:
         allocator(Holes_Objects, each, 'f')
     fix_holes()
-    Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
+    if Graph:
+        Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
     show_progress(Holes_Objects)
 
 
@@ -153,7 +157,8 @@ def deallocate(pid):
         Processes_Objects.remove(to_be_deleted)
 
     fix_holes()
-    Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
+    if Graph:
+        Draw.draw_graph(Holes_Objects, Processes_Objects, Block_List)
     show_progress(Holes_Objects)
 
 
@@ -163,6 +168,16 @@ def new_process(pid, size):
     :param size:  Integer -> Size of the process to be added
     """
     Processes_Objects.append(Process.Process(pid, size))
+
+
+def enable_graph():
+    global Graph
+    Graph = True
+
+
+def disable_graph():
+    global Graph
+    Graph = False
 
 
 def show_progress(holes):
